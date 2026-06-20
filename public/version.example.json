@@ -1,13 +1,15 @@
 {
   "appName": "ReportFlow",
   "latestVersion": "0.1.1",
-  "latestBuild": 3,
+  "latestBuild": 4,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build3/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build4/reportbeta.apk",
   "releaseNotes": [
-    "Checklist aparece antes que los hallazgos en el wizard",
-    "Nuevo encabezado documental compacto en 2 líneas",
-    "Misma lógica aplicada al PDF"
+    "Funcionalidad de Plantillas Personalizadas (Mis plantillas)",
+    "Crear, editar, duplicar y eliminar formatos de checklist",
+    "Guardar checklist de un reporte como plantilla reusable",
+    "Autopoblación con plantilla genérica inicial",
+    "Base de datos local-first actualizada a v2"
   ],
   "required": false,
   "publishedAt": "2026-06-20"
