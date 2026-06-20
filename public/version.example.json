@@ -1,16 +1,15 @@
 {
   "appName": "ReportFlow",
   "latestVersion": "0.1.1",
-  "latestBuild": 6,
+  "latestBuild": 7,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build6/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build7/reportbeta.apk",
   "releaseNotes": [
-    "Selector visual de estados (dropdown estilizado por colores) en Checklist",
-    "Nuevo estado 'No aplica' para ítems de Checklist",
-    "Diseño de tarjetas de Checklist ultra compacto para mobile",
-    "Contador de ítems dinámico en encabezado de Checklist",
-    "Renombrado de botón inferior a 'Guardar borrador'",
-    "Soporte completo para 'No aplica' en previsualización y exportación PDF"
+    "Personalización local con Perfil del Inspector (Nombre, Cargo, Email)",
+    "Gestión de múltiples Empresas/Clientes (CRUD completo, logos y pie de página)",
+    "Flujo de Onboarding inicial para configurar perfil y primera empresa",
+    "Autocompletado inteligente de branding en Portada desde empresas guardadas",
+    "Nueva pantalla completa de Ajustes para administrar tus datos y logos"
   ],
   "required": false,
   "publishedAt": "2026-06-20"

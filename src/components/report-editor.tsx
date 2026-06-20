@@ -2,9 +2,10 @@
 
 import { AlertCircle } from "lucide-react";
 import { ReportStatus } from "@/lib/domain/types";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
+import { profileRepository } from "@/lib/infrastructure/IndexedDbProfileRepository";
 import { fileService } from "@/lib/infrastructure/BrowserFileService";
 import { reportRepository } from "@/lib/infrastructure/IndexedDbReportRepository";
 import { reportInputSchema } from "@/lib/report-schema";
@@ -39,6 +40,37 @@ export function ReportEditor({
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [values, setValues] = useState<ReportFormValues>(initialValues);
+
+  useEffect(() => {
+    if (mode === "create") {
+      async function loadDefaults() {
+        try {
+          const profile = await profileRepository.getProfile();
+          const companies = await profileRepository.listCompanies();
+          const defaultCompany = companies.find((c) => c.isDefault);
+
+          setValues((current) => {
+            const updated = { ...current };
+            if (profile) {
+              updated.author = `${profile.firstName} ${profile.lastName}`.trim();
+            } else {
+              updated.author = "";
+            }
+            if (defaultCompany) {
+              updated.companyName = defaultCompany.name;
+              updated.companyLogoPath = defaultCompany.logo || null;
+              updated.area = defaultCompany.areaOrUnit || "";
+              updated.footerText = defaultCompany.footerText || "";
+            }
+            return updated;
+          });
+        } catch (err) {
+          console.error("Error loading onboarding defaults in editor", err);
+        }
+      }
+      loadDefaults();
+    }
+  }, [mode]);
   const [error, setError] = useState<string | null>(null);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [pending, startSaveTransition] = useTransition();

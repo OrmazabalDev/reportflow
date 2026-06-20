@@ -2,14 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { History, Home, PlusCircle, Shield, FileText } from "lucide-react";
+import { History, Home, PlusCircle, Settings, FileText, LoaderCircle, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { profileRepository } from "@/lib/infrastructure/IndexedDbProfileRepository";
+import { OnboardingOverlay } from "@/components/onboarding-overlay";
+import type { UserProfile } from "@/lib/domain/types";
 
 const navigation = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/reports/new", label: "Nuevo", icon: PlusCircle },
   { href: "/reports", label: "Historial", icon: History },
   { href: "/templates", label: "Plantillas", icon: FileText },
+  { href: "/settings", label: "Ajustes", icon: Settings },
 ];
 
 function getPageTitle(pathname: string) {
@@ -20,6 +25,7 @@ function getPageTitle(pathname: string) {
   if (pathname === "/reports/detail") return "Detalle";
   if (pathname === "/reports") return "Historial";
   if (pathname === "/templates") return "Plantillas";
+  if (pathname === "/settings") return "Ajustes";
   return "ReportFlow";
 }
 
@@ -39,8 +45,36 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const pageTitle = getPageTitle(pathname);
 
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async () => {
+    try {
+      const u = await profileRepository.getProfile();
+      setProfile(u);
+    } catch (err) {
+      console.error("Error loading profile in shell", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--rf-bg)]">
+        <LoaderCircle className="size-8 animate-spin text-[var(--rf-primary)]" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--rf-bg)] text-[var(--rf-text)] pb-[calc(100px+env(safe-area-inset-bottom))] md:pb-0">
+      {!profile && <OnboardingOverlay onComplete={fetchProfile} />}
+      
       {/* ── Mobile App Bar ── */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-[var(--rf-border)] md:hidden">
         <div className="flex h-16 items-center justify-between px-4">
@@ -51,12 +85,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </h1>
           </div>
           <Link
-            href="/"
+            href="/settings"
             prefetch={false}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-slate-600 active:scale-[0.98] transition border border-slate-200/60 shadow-sm"
             aria-label="Configuración"
           >
-            <Shield className="size-5" />
+            <Settings className="size-5" />
           </Link>
         </div>
       </header>
@@ -101,17 +135,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="mt-auto pt-8">
-            <div className="rounded-xl bg-slate-50 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full bg-[var(--rf-primary-light)] text-xs font-bold text-[var(--rf-primary)]">
-                  DO
-                </span>
-                <div>
-                  <p className="text-sm font-semibold">Diego O.</p>
-                  <p className="text-[11px] text-[var(--rf-muted)]">Uso interno</p>
+            {profile ? (
+              <Link href="/settings" className="block rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100/80 active:scale-[0.98] transition-all border border-slate-200/40">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-full bg-[var(--rf-primary-light)] text-xs font-bold text-[var(--rf-primary)] uppercase shrink-0">
+                    {profile.firstName[0] || ""}{profile.lastName[0] || ""}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold truncate text-slate-900 leading-tight">
+                      {profile.firstName} {profile.lastName}
+                    </p>
+                    <p className="text-[10px] font-semibold text-[var(--rf-muted)] truncate leading-none mt-1">
+                      {profile.role || "Inspector Local"}
+                    </p>
+                  </div>
                 </div>
+              </Link>
+            ) : (
+              <div className="rounded-xl bg-slate-50 px-4 py-3 text-center text-xs text-slate-400">
+                Cargando perfil...
               </div>
-            </div>
+            )}
           </div>
         </aside>
 

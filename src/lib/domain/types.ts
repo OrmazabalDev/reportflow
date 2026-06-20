@@ -102,3 +102,21 @@ export type TemplateWithRelations = Template & {
   items: TemplateItem[];
 };
 
+export type UserProfile = {
+  firstName: string;
+  lastName: string;
+  role?: string;
+  email?: string;
+};
+
+export type Company = {
+  id: string;
+  name: string;
+  areaOrUnit?: string;
+  logo?: string | null;
+  footerText?: string;
+  isDefault?: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+

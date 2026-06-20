@@ -9,6 +9,8 @@ import type {
   ReportFormValues,
   Template,
   TemplateItem,
+  UserProfile,
+  Company,
 } from "@/lib/domain/types";
 
 export interface ReportFlowDB extends DBSchema {
@@ -44,10 +46,18 @@ export interface ReportFlowDB extends DBSchema {
       "by-template": string;
     };
   };
+  profile: {
+    key: string;
+    value: UserProfile;
+  };
+  companies: {
+    key: string;
+    value: Company;
+  };
 }
 
 const DB_NAME = "reportflow-db";
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<ReportFlowDB>> | null = null;
 
@@ -77,6 +87,12 @@ export function getDb() {
             keyPath: "id",
           });
           templateItemStore.createIndex("by-template", "templateId");
+        }
+        if (!db.objectStoreNames.contains("profile")) {
+          db.createObjectStore("profile");
+        }
+        if (!db.objectStoreNames.contains("companies")) {
+          db.createObjectStore("companies", { keyPath: "id" });
         }
       },
     });
