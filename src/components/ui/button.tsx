@@ -21,7 +21,7 @@ type Variant = NonNullable<BaseButtonProps["variant"]>;
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-[var(--rf-primary)] text-white shadow-sm hover:bg-[var(--rf-primary-dark)] active:bg-[#1b2d43]",
+    "bg-[var(--rf-primary)] !text-white shadow-sm hover:bg-[var(--rf-primary-dark)] active:bg-[#1b2d43]",
   secondary:
     "bg-white text-slate-800 ring-1 ring-[var(--rf-border)] hover:bg-slate-50 active:bg-slate-100",
   ghost:

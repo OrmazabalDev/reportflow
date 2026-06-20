@@ -1,15 +1,13 @@
 {
   "appName": "ReportFlow",
   "latestVersion": "0.1.1",
-  "latestBuild": 7,
+  "latestBuild": 8,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build7/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build8/reportbeta.apk",
   "releaseNotes": [
-    "Personalización local con Perfil del Inspector (Nombre, Cargo, Email)",
-    "Gestión de múltiples Empresas/Clientes (CRUD completo, logos y pie de página)",
-    "Flujo de Onboarding inicial para configurar perfil y primera empresa",
-    "Autocompletado inteligente de branding en Portada desde empresas guardadas",
-    "Nueva pantalla completa de Ajustes para administrar tus datos y logos"
+    "Corrección de legibilidad en texto/iconos de botones primarios (color blanco forzado)",
+    "Revisión de responsive completa en panel de Ajustes y Onboarding",
+    "Optimización de flujo local y bases de datos"
   ],
   "required": false,
   "publishedAt": "2026-06-20"
