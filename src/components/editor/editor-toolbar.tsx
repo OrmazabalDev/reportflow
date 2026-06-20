@@ -27,45 +27,50 @@ export function EditorToolbar({
   const isSummary = step === totalSteps - 1;
 
   return (
-    <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 -mx-4 bg-white/95 px-4 py-4 backdrop-blur-lg border-t border-[var(--rf-border)] md:static md:mx-0 md:bg-transparent md:px-0 md:py-0 md:border-0 md:backdrop-blur-0">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex gap-2 w-full md:w-auto md:order-2">
+    <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 -mx-4 bg-white/95 px-4 py-3 backdrop-blur-lg border-t border-[var(--rf-border)] md:static md:mx-0 md:bg-transparent md:px-0 md:py-0 md:border-0 md:backdrop-blur-0">
+      <div className="flex items-center justify-between gap-3 w-full">
+        {/* Guardar Borrador */}
+        <div className="shrink-0">
+          <button
+            type="button"
+            onClick={onSaveDraft}
+            disabled={pending}
+            className="text-[13px] font-bold text-slate-500 hover:text-slate-800 active:scale-[0.98] transition-all py-2 text-left"
+          >
+            Borrador
+          </button>
+        </div>
+
+        {/* Navegación */}
+        <div className="flex gap-2 items-center">
           {step > 0 ? (
             <Button
               variant="secondary"
+              size="sm"
               onClick={onPrev}
-              className="flex-1 md:flex-none h-[52px] rounded-2xl shadow-sm"
+              className="shadow-sm font-bold min-h-[44px]"
             >
               Anterior
             </Button>
           ) : null}
           {!isSummary ? (
             <Button
+              size="sm"
               onClick={onNext}
-              className="flex-1 md:flex-none h-[52px] rounded-2xl shadow-sm"
+              className="shadow-sm font-bold min-h-[44px]"
             >
               Continuar
             </Button>
           ) : (
             <Button
+              size="sm"
               loading={pending}
               onClick={onFinalize}
-              className="flex-1 md:flex-none h-[52px] rounded-2xl shadow-sm"
+              className="shadow-sm font-bold min-h-[44px]"
             >
               Finalizar
             </Button>
           )}
-        </div>
-
-        <div className="flex justify-center md:order-1">
-          <button
-            type="button"
-            onClick={onSaveDraft}
-            disabled={pending}
-            className="text-sm font-semibold text-[var(--rf-muted)] active:scale-[0.98] active:text-slate-900 transition-all p-2"
-          >
-            Guardar como borrador
-          </button>
         </div>
       </div>
     </div>

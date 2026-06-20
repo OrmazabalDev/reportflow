@@ -111,12 +111,17 @@ export function DashboardView() {
 
         <div className="overflow-hidden rounded-[var(--rf-radius-card)] bg-white shadow-[var(--rf-shadow-sm)] border border-[var(--rf-border)]">
           {reports.length === 0 ? (
-            <div className="px-5 py-10 text-center">
-              <p className="text-base font-semibold text-slate-900">
-                Todavía no hay reportes
-              </p>
-              <p className="mt-1 text-sm text-[var(--rf-muted)]">
-                Crea el primero para empezar.
+            <div className="px-6 py-12 text-center space-y-3">
+              <div className="space-y-1">
+                <p className="text-base font-bold text-slate-950">
+                  Todavía no hay reportes
+                </p>
+                <p className="text-sm text-[var(--rf-muted)] max-w-xs mx-auto leading-relaxed">
+                  Crea tu primer checklist, agrega fotos y exporta un PDF profesional.
+                </p>
+              </div>
+              <p className="text-xs text-slate-400">
+                💡 Tip: puedes usar plantillas para tus reportes recurrentes.
               </p>
             </div>
           ) : (

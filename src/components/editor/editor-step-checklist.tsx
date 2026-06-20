@@ -136,30 +136,42 @@ export function EditorStepChecklist({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SectionHeader
-          title="Estado de verificación"
-          description="Control final del recorrido con estado visible."
-        />
-        <div className="flex gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<FileText />}
-            onClick={() => setShowTemplateSelector(true)}
-          >
-            Usar plantilla
-          </Button>
-          <Button variant="secondary" size="sm" icon={<Plus />} onClick={addChecklistItem}>
-            Añadir
-          </Button>
+      <div className="bg-white p-4 rounded-2xl border border-[var(--rf-border)] shadow-[var(--rf-shadow-sm)] space-y-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <SectionHeader
+            title="Puntos de verificación"
+            description="Control final del recorrido con estado visible."
+          />
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="flex-1 sm:flex-none min-h-[44px]"
+              icon={<FileText />}
+              onClick={() => setShowTemplateSelector(true)}
+            >
+              Usar plantilla
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="flex-1 sm:flex-none min-h-[44px]"
+              icon={<Plus />}
+              onClick={addChecklistItem}
+            >
+              Añadir
+            </Button>
+          </div>
         </div>
+        <p className="text-xs leading-relaxed text-slate-500 border-t border-slate-100 pt-3">
+          💡 Usa una plantilla para cargar ítems recurrentes automáticamente.
+        </p>
       </div>
 
       {values.checklistItems.length === 0 ? (
         <EmptyComposer
           title="Aún no hay items"
-          description="Agrega el primer punto de verificación o usa una plantilla."
+          description="Carga una plantilla o agrega tu primer punto de verificación."
           cta="Añadir item"
           onClick={addChecklistItem}
         />
@@ -284,25 +296,45 @@ export function EditorStepChecklist({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1 hide-scrollbar">
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1 hide-scrollbar">
               {templates.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-4">No tienes plantillas guardadas.</p>
+                <div className="text-center py-6 space-y-4">
+                  <p className="text-sm text-slate-500">No tienes plantillas guardadas.</p>
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={() => {
+                      setShowTemplateSelector(false);
+                      window.location.href = "/templates";
+                    }}
+                  >
+                    Crear plantilla
+                  </Button>
+                </div>
               ) : (
                 templates.map((tpl) => (
-                  <button
+                  <article
                     key={tpl.id}
-                    type="button"
-                    onClick={() => applyTemplate(tpl)}
-                    className="w-full text-left p-3.5 rounded-2xl border border-slate-100 hover:border-[var(--rf-primary)] hover:bg-slate-50 active:scale-[0.98] transition-all space-y-1 block"
+                    className="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 space-y-3 flex flex-col justify-between"
                   >
-                    <p className="font-bold text-slate-950 text-sm">{tpl.name}</p>
-                    {tpl.description && (
-                      <p className="text-xs text-slate-600 line-clamp-1">{tpl.description}</p>
-                    )}
-                    <p className="text-[10px] font-bold text-[var(--rf-primary)]">
-                      {tpl.items.length} ítems
-                    </p>
-                  </button>
+                    <div className="space-y-1">
+                      <p className="font-bold text-slate-950 text-sm leading-snug">{tpl.name}</p>
+                      {tpl.description && (
+                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{tpl.description}</p>
+                      )}
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--rf-primary)]">
+                        {tpl.items.length} ítems
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="w-full min-h-[38px] text-xs py-2"
+                      onClick={() => applyTemplate(tpl)}
+                    >
+                      Usar plantilla
+                    </Button>
+                  </article>
                 ))
               )}
             </div>
