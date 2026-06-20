@@ -23,8 +23,8 @@ import { cn } from "@/lib/utils";
 
 const steps = [
   { label: "Información general", short: "Info" },
-  { label: "Hallazgos", short: "Hallazgos" },
   { label: "Checklist", short: "Checklist" },
+  { label: "Hallazgos", short: "Hallazgos" },
   { label: "Resumen", short: "Resumen" },
 ];
 
@@ -270,6 +270,15 @@ export function ReportEditor({
       ) : null}
 
       {step === 1 ? (
+        <EditorStepChecklist
+          values={values}
+          onValuesChange={setValues}
+          onError={setError}
+          onMessage={(msg) => toast(msg, "info")}
+        />
+      ) : null}
+
+      {step === 2 ? (
         <EditorStepFindings
           values={values}
           onValuesChange={setValues}
@@ -277,15 +286,6 @@ export function ReportEditor({
           onMessage={(msg) => toast(msg, "info")}
           uploadingIndex={uploadingIndex}
           onImageUpload={handleImageUpload}
-        />
-      ) : null}
-
-      {step === 2 ? (
-        <EditorStepChecklist
-          values={values}
-          onValuesChange={setValues}
-          onError={setError}
-          onMessage={(msg) => toast(msg, "info")}
         />
       ) : null}
 

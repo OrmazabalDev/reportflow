@@ -23,49 +23,95 @@ export function ReportPreview({ report }: { report: ReportWithRelations }) {
     <div className="space-y-4">
       {/* ── Cover ── */}
       <section className="rounded-[var(--rf-radius-card)] bg-white p-4 ring-1 ring-[var(--rf-border)] md:p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            {hasBranding ? (
-              <div className="flex items-center gap-3 mb-3">
-                {report.companyLogoPath ? (
-                  <div className="relative h-12 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-50">
-                    <LocalImage
-                      src={report.companyLogoPath}
-                      alt={report.companyName || "Logo"}
-                      fill
-                      className="object-contain p-2"
-                    />
-                  </div>
-                ) : null}
-                <div>
-                  <p className="text-xs font-medium text-[var(--rf-muted)]">
-                    {report.companyName || "Reporte institucional"}
-                  </p>
-                  {report.area ? (
-                    <p className="text-xs text-slate-400">{report.area}</p>
-                  ) : null}
+        <div className="flex flex-col md:flex-row items-start gap-4 border-b border-[var(--rf-border)] pb-4 mb-4">
+          {report.companyLogoPath ? (
+            <div className="relative h-12 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-50">
+              <LocalImage
+                src={report.companyLogoPath}
+                alt={report.companyName || "Logo"}
+                fill
+                className="object-contain p-2"
+              />
+            </div>
+          ) : null}
+          <div className="flex-1 w-full space-y-3">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+              <div>
+                <p className="text-sm font-black text-slate-500 uppercase tracking-wide">
+                  {report.companyName || "Empresa"}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {report.area || "Área/Unidad"}
+                </p>
+              </div>
+              <div className="text-left md:text-right">
+                <h1 className="text-sm font-black text-[var(--rf-primary)] uppercase tracking-wide">
+                  {report.title || "Reporte Operativo"}
+                </h1>
+                <div className="mt-1 flex items-center md:justify-end gap-2 text-sm font-bold text-[var(--rf-primary)]">
+                  Estado: <StatusBadge status={report.status} />
                 </div>
               </div>
-            ) : null}
-
-            <h1 className="text-xl font-bold tracking-tight text-slate-950 md:text-2xl">
-              {report.title}
-            </h1>
+            </div>
+            
+            <div className="flex flex-wrap gap-x-2 gap-y-1 text-sm font-medium text-slate-700 pt-2 border-t border-slate-100">
+              <span>Fecha: {formatDate(report.date)}</span>
+              <span className="text-slate-300">|</span>
+              <span>Autor: {report.author || "N/A"}</span>
+              {report.area ? (
+                <>
+                  <span className="text-slate-300">|</span>
+                  <span>Área: {report.area}</span>
+                </>
+              ) : null}
+            </div>
           </div>
-          <StatusBadge status={report.status} />
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm text-[var(--rf-muted)]">
-          <span>{report.author}</span>
-          <span>{formatDate(report.date)}</span>
-          <span>{report.companyName || "Sin empresa"}</span>
         </div>
 
         {report.description ? (
-          <p className="mt-4 text-sm leading-6 text-slate-700 border-t border-[var(--rf-border)] pt-4">
-            {report.description}
-          </p>
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 mb-1">Resumen Ejecutivo</h2>
+            <p className="text-sm leading-6 text-slate-700">
+              {report.description}
+            </p>
+          </div>
         ) : null}
+      </section>
+
+      {/* ── Checklist ── */}
+      <section className="rounded-[var(--rf-radius-card)] bg-white p-4 ring-1 ring-[var(--rf-border)] md:p-6">
+        <h2 className="text-base font-semibold text-slate-900 mb-4">Checklist</h2>
+        {report.checklistItems.length === 0 ? (
+          <p className="py-6 text-center text-sm text-[var(--rf-muted)]">
+            No hay items de checklist registrados.
+          </p>
+        ) : (
+          <div className="divide-y divide-[var(--rf-border)]">
+            {report.checklistItems.map((item, index) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                {item.status === "DONE" ? (
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />
+                ) : item.status === "OBSERVED" ? (
+                  <AlertCircle className="size-5 shrink-0 text-amber-500" />
+                ) : (
+                  <Circle className="size-5 shrink-0 text-slate-300" />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-slate-900">
+                    {index + 1}. {item.text}
+                  </p>
+                  {item.note ? (
+                    <p className="mt-0.5 text-xs text-[var(--rf-muted)]">{item.note}</p>
+                  ) : null}
+                </div>
+                <StatusBadge status={item.status} />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── Findings ── */}
@@ -110,42 +156,6 @@ export function ReportPreview({ report }: { report: ReportWithRelations }) {
                   ) : null}
                 </div>
               </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* ── Checklist ── */}
-      <section className="rounded-[var(--rf-radius-card)] bg-white p-4 ring-1 ring-[var(--rf-border)] md:p-6">
-        <h2 className="text-base font-semibold text-slate-900 mb-4">Checklist</h2>
-        {report.checklistItems.length === 0 ? (
-          <p className="py-6 text-center text-sm text-[var(--rf-muted)]">
-            No hay items de checklist registrados.
-          </p>
-        ) : (
-          <div className="divide-y divide-[var(--rf-border)]">
-            {report.checklistItems.map((item, index) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
-              >
-                {item.status === "DONE" ? (
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />
-                ) : item.status === "OBSERVED" ? (
-                  <AlertCircle className="size-5 shrink-0 text-amber-500" />
-                ) : (
-                  <Circle className="size-5 shrink-0 text-slate-300" />
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-slate-900">
-                    {index + 1}. {item.text}
-                  </p>
-                  {item.note ? (
-                    <p className="mt-0.5 text-xs text-[var(--rf-muted)]">{item.note}</p>
-                  ) : null}
-                </div>
-                <StatusBadge status={item.status} />
-              </div>
             ))}
           </div>
         )}

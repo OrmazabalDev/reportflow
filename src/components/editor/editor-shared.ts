@@ -54,12 +54,12 @@ export function validateFindingsStep(values: ReportFormValues): ValidationResult
     const finding = values.findings[invalidIndex];
     if (!finding.imagePath) {
       return {
-        step: 1,
+        step: 2,
         message: `Carga la imagen del hallazgo ${invalidIndex + 1} antes de continuar.`,
       };
     }
     return {
-      step: 1,
+      step: 2,
       message: `Completa el pie de foto del hallazgo ${invalidIndex + 1}.`,
     };
   }
@@ -70,7 +70,7 @@ export function validateChecklistStep(values: ReportFormValues): ValidationResul
   const invalidIndex = values.checklistItems.findIndex((item) => !item.text.trim());
   if (invalidIndex >= 0) {
     return {
-      step: 2,
+      step: 1,
       message: `Completa el texto del item ${invalidIndex + 1} para continuar.`,
     };
   }
@@ -79,15 +79,15 @@ export function validateChecklistStep(values: ReportFormValues): ValidationResul
 
 export function validateStep(values: ReportFormValues, step: number): ValidationResult {
   if (step === 0) return validateGeneralStep(values);
-  if (step === 1) return validateFindingsStep(values);
-  if (step === 2) return validateChecklistStep(values);
+  if (step === 1) return validateChecklistStep(values);
+  if (step === 2) return validateFindingsStep(values);
   return null;
 }
 
 export function validateForPreview(values: ReportFormValues): ValidationResult {
   return (
     validateGeneralStep(values) ??
-    validateFindingsStep(values) ??
-    validateChecklistStep(values)
+    validateChecklistStep(values) ??
+    validateFindingsStep(values)
   );
 }

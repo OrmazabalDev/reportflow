@@ -162,35 +162,44 @@ export async function buildReportPdf(report: ReportWithRelations) {
   };
 
   // --- A. Encabezado Compacto ---
-  const headerHeight = 100;
-  
-  if (report.companyLogoPath) {
+  const headerHeight = 60;
+  const hasLogo = Boolean(report.companyLogoPath);
+  const headerLeftOffset = hasLogo ? margin + 90 : margin;
+
+  if (hasLogo) {
     await drawStoredImage(
       pdfDoc,
       page,
-      report.companyLogoPath,
+      report.companyLogoPath!,
       margin,
-      cursorY - 60,
-      100,
-      60,
+      cursorY - 40,
+      80,
+      40,
       regular,
       "Logo"
     );
   }
-
-  const headerLeftOffset = report.companyLogoPath ? margin + 120 : margin;
   
-  drawTextBlock(page, (report.companyName || "Empresa").toUpperCase(), headerLeftOffset, cursorY, { font: bold, size: 10, color: colors.muted });
-  drawTextBlock(page, report.area || "Área/Unidad", headerLeftOffset, cursorY - 14, { font: regular, size: 10, color: colors.muted });
-  
-  drawTextBlock(page, (report.title || "Reporte Operativo").toUpperCase(), headerLeftOffset, cursorY - 34, { font: bold, size: 16, color: colors.primary, maxWidth: pageWidth - headerLeftOffset - margin });
-  
-  const formattedDate = formatDate(report.date);
-  drawTextBlock(page, `Fecha: ${formattedDate} | Autor: ${report.author || "N/A"}`, headerLeftOffset, cursorY - 54, { font: regular, size: 10, color: colors.ink });
-  
-  const statusLabels: Record<string, string> = { DRAFT: "Borrador", FINAL: "Finalizado", ARCHIVED: "Archivado" };
+  const statusLabels: Record<string, string> = { DRAFT: "Borrador", FINAL: "FINALIZADO", ARCHIVED: "Archivado" };
   const statusText = statusLabels[report.status] || report.status;
-  drawTextBlock(page, `Estado: ${statusText}`, headerLeftOffset, cursorY - 68, { font: bold, size: 10, color: colors.primary });
+
+  const empresaText = (report.companyName || "Empresa").toUpperCase();
+  const tituloText = (report.title || "Reporte Operativo").toUpperCase();
+  drawTextBlock(page, empresaText, headerLeftOffset, cursorY, { font: bold, size: 10, color: colors.muted });
+  
+  const titleWidth = bold.widthOfTextAtSize(tituloText, 10);
+  drawTextBlock(page, tituloText, pageWidth - margin - titleWidth, cursorY, { font: bold, size: 10, color: colors.primary });
+
+  const areaText = report.area || "Área/Unidad";
+  drawTextBlock(page, areaText, headerLeftOffset, cursorY - 14, { font: regular, size: 10, color: colors.muted });
+  
+  const estadoText = `Estado: ${statusText}`;
+  const estadoWidth = bold.widthOfTextAtSize(estadoText, 10);
+  drawTextBlock(page, estadoText, pageWidth - margin - estadoWidth, cursorY - 14, { font: bold, size: 10, color: colors.primary });
+
+  const formattedDate = formatDate(report.date);
+  const linea3 = `Fecha: ${formattedDate} | Autor: ${report.author || "N/A"}${report.area ? ` | Área: ${report.area}` : ""}`;
+  drawTextBlock(page, linea3, headerLeftOffset, cursorY - 34, { font: regular, size: 10, color: colors.ink });
 
   cursorY -= headerHeight;
 
