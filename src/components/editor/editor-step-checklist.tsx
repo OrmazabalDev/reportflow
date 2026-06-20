@@ -15,6 +15,21 @@ import { useEffect, useState } from "react";
 import { templateRepository } from "@/lib/infrastructure/IndexedDbTemplateRepository";
 import type { TemplateWithRelations } from "@/lib/domain/types";
 
+const getStatusStyles = (status: ChecklistStatus) => {
+  switch (status) {
+    case ChecklistStatus.PENDING:
+      return "bg-slate-100 text-slate-700 border-slate-200 focus:ring-slate-300";
+    case ChecklistStatus.DONE:
+      return "bg-[var(--rf-success-bg)] text-[var(--rf-success-text)] border-[var(--rf-success-border)] focus:ring-[var(--rf-success-border)]";
+    case ChecklistStatus.OBSERVED:
+      return "bg-amber-50 text-amber-800 border-amber-200 focus:ring-amber-200";
+    case ChecklistStatus.NOT_APPLICABLE:
+      return "bg-slate-100 text-slate-500 border-slate-200 focus:ring-slate-300";
+    default:
+      return "bg-slate-50 text-slate-700 border-slate-200";
+  }
+};
+
 export function EditorStepChecklist({
   values,
   onValuesChange,
@@ -180,86 +195,54 @@ export function EditorStepChecklist({
           {values.checklistItems.map((item, index) => (
             <article
               key={`check-${index}`}
-              className="rounded-[var(--rf-radius-card)] bg-white p-4 ring-1 ring-[var(--rf-border)]"
+              className="rounded-2xl bg-white p-3 ring-1 ring-[var(--rf-border)] shadow-sm space-y-2"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1 space-y-3">
-                  <div className="space-y-2">
-                    <FieldLabel
-                      label="Item"
-                      htmlFor={`check-text-${index}`}
-                      required
-                    />
-                    <input
-                      id={`check-text-${index}`}
-                      value={item.text}
-                      onChange={(e) => updateChecklist(index, "text", e.target.value)}
-                      className={fieldClass}
-                      placeholder="Punto de verificación..."
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <FieldLabel
-                      label="Observación"
-                      htmlFor={`check-note-${index}`}
-                      optional
-                    />
-                    <input
-                      id={`check-note-${index}`}
-                      value={item.note}
-                      onChange={(e) => updateChecklist(index, "note", e.target.value)}
-                      className={fieldClass}
-                      placeholder="Observación opcional..."
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <FieldLabel label="Estado" />
-                    <div className="flex gap-2">
-                      {[
-                        {
-                          label: "Pendiente",
-                          value: ChecklistStatus.PENDING,
-                          active: "bg-slate-200 text-slate-800 ring-slate-300",
-                        },
-                        {
-                          label: "Realizado",
-                          value: ChecklistStatus.DONE,
-                          active: "bg-[var(--rf-success-bg)] text-[var(--rf-success-text)] ring-[var(--rf-success-border)]",
-                        },
-                        {
-                          label: "Observado",
-                          value: ChecklistStatus.OBSERVED,
-                          active: "bg-amber-50 text-amber-800 ring-amber-200",
-                        },
-                      ].map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => updateChecklist(index, "status", option.value)}
-                          className={cn(
-                            "min-h-[44px] flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-all active:scale-[0.97]",
-                            item.status === option.value
-                              ? `${option.active} ring-1`
-                              : "bg-slate-50 text-slate-500 ring-1 ring-[var(--rf-border)] hover:bg-slate-100",
-                          )}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
+              {/* Row 1: Text and Delete */}
+              <div className="flex items-center gap-2">
+                <input
+                  id={`check-text-${index}`}
+                  value={item.text}
+                  onChange={(e) => updateChecklist(index, "text", e.target.value)}
+                  className={cn(fieldClass, "flex-1 min-h-[40px] py-1.5 px-3 text-sm")}
+                  placeholder="Punto de verificación..."
+                />
                 <button
                   type="button"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-500 active:bg-red-100"
+                  className="flex size-10 shrink-0 items-center justify-center rounded-xl text-slate-400 transition hover:bg-red-50 hover:text-red-500 active:bg-red-100 border border-slate-100"
                   onClick={() => removeChecklistItem(index)}
                   aria-label={`Eliminar item ${index + 1}`}
                 >
                   <Trash2 className="size-4" />
                 </button>
+              </div>
+
+              {/* Row 2: Status and Observation */}
+              <div className="flex items-center gap-2">
+                <select
+                  id={`check-status-${index}`}
+                  value={item.status}
+                  onChange={(e) => updateChecklist(index, "status", e.target.value as ChecklistStatus)}
+                  className={cn(
+                    "w-[125px] shrink-0 min-h-[38px] rounded-xl px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:0.8em_0.8em] pr-6",
+                    getStatusStyles(item.status)
+                  )}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`
+                  }}
+                >
+                  <option value={ChecklistStatus.PENDING} className="bg-white text-slate-800">Pendiente</option>
+                  <option value={ChecklistStatus.DONE} className="bg-white text-slate-800">Realizado</option>
+                  <option value={ChecklistStatus.OBSERVED} className="bg-white text-slate-800">Observado</option>
+                  <option value={ChecklistStatus.NOT_APPLICABLE} className="bg-white text-slate-800">No aplica</option>
+                </select>
+
+                <input
+                  id={`check-note-${index}`}
+                  value={item.note}
+                  onChange={(e) => updateChecklist(index, "note", e.target.value)}
+                  className={cn(fieldClass, "flex-1 min-h-[38px] py-1 px-3 text-xs")}
+                  placeholder="Agregar observación..."
+                />
               </div>
             </article>
           ))}

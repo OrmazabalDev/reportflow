@@ -18,6 +18,7 @@ const colors = {
   done: rgb(0.12, 0.55, 0.35),
   observed: rgb(0.78, 0.52, 0.11),
   pending: rgb(0.45, 0.49, 0.56),
+  notApplicable: rgb(0.55, 0.59, 0.66),
 };
 
 type TextOptions = {
@@ -254,8 +255,19 @@ export async function buildReportPdf(report: ReportWithRelations) {
       }
 
       // Estado
-      const statusLabel = item.status === "DONE" ? "Realizado" : item.status === "OBSERVED" ? "Observado" : "Pendiente";
-      const statusColor = item.status === "DONE" ? colors.done : item.status === "OBSERVED" ? colors.observed : colors.pending;
+      let statusLabel = "Pendiente";
+      let statusColor = colors.pending;
+
+      if (item.status === "DONE") {
+        statusLabel = "Realizado";
+        statusColor = colors.done;
+      } else if (item.status === "OBSERVED") {
+        statusLabel = "Observado";
+        statusColor = colors.observed;
+      } else if (item.status === "NOT_APPLICABLE") {
+        statusLabel = "No aplica";
+        statusColor = colors.notApplicable;
+      }
       
       page.drawRectangle({ x: pageWidth - margin - 100, y: cursorY - 22, width: 8, height: 8, color: statusColor });
       drawTextBlock(page, statusLabel, pageWidth - margin - 86, cursorY - 16, { font: bold, size: 9, color: statusColor });

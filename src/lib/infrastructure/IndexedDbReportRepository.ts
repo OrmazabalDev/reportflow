@@ -102,7 +102,7 @@ export class IndexedDbReportRepository implements ReportRepository {
     
     const pendingChecklist = reportsWithRelations.reduce(
       (sum, report) =>
-        sum + report.checklistItems.filter((item) => item.status !== ChecklistStatus.DONE).length,
+        sum + report.checklistItems.filter((item) => item.status !== ChecklistStatus.DONE && item.status !== ChecklistStatus.NOT_APPLICABLE).length,
       0
     );
 

@@ -16,6 +16,7 @@ enum ChecklistStatus {
   DONE
   PENDING
   OBSERVED
+  NOT_APPLICABLE
 }
 
 model Report {

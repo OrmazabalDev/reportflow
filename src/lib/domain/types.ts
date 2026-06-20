@@ -7,6 +7,7 @@ export enum ChecklistStatus {
   PENDING = "PENDING",
   DONE = "DONE",
   OBSERVED = "OBSERVED",
+  NOT_APPLICABLE = "NOT_APPLICABLE",
 }
 
 export type Finding = {

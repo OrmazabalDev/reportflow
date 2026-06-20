@@ -2,7 +2,7 @@
 
 import { LocalImage } from "@/components/ui/local-image";
 import { ChecklistStatus, ReportStatus } from "@/lib/domain/types";
-import { AlertCircle, CheckCircle2, Circle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Circle, MinusCircle } from "lucide-react";
 import { StatusBadge } from "@/components/status-badge";
 import { SectionHeader } from "@/components/editor/editor-ui";
 import type { ReportFormValues } from "@/lib/types";
@@ -128,6 +128,8 @@ export function EditorStepSummary({ values }: { values: ReportFormValues }) {
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />
                 ) : item.status === ChecklistStatus.OBSERVED ? (
                   <AlertCircle className="size-5 shrink-0 text-amber-500" />
+                ) : item.status === ChecklistStatus.NOT_APPLICABLE ? (
+                  <MinusCircle className="size-5 shrink-0 text-slate-400" />
                 ) : (
                   <Circle className="size-5 shrink-0 text-slate-300" />
                 )}

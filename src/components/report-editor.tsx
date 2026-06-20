@@ -210,7 +210,11 @@ export function ReportEditor({
                 Paso {step + 1} de {steps.length}
               </p>
               <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">
-                {steps[step].label}
+                {step === 1 && values.checklistItems.length > 0
+                  ? `${steps[step].label} (${values.checklistItems.length} ${
+                      values.checklistItems.length === 1 ? "ítem" : "ítems"
+                    })`
+                  : steps[step].label}
               </h2>
             </div>
             {values.id ? (
@@ -228,23 +232,29 @@ export function ReportEditor({
           </div>
 
           <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
-            {steps.map((s, index) => (
-              <button
-                key={s.short}
-                type="button"
-                onClick={() => goToStep(index)}
-                className={cn(
-                  "shrink-0 rounded-full px-3.5 py-1 text-[11px] font-bold transition-all active:scale-[0.98]",
-                  index === step
-                    ? "bg-[var(--rf-primary)] text-white shadow-sm"
-                    : index < step
-                      ? "bg-[var(--rf-primary-light)] text-[var(--rf-primary-dark)]"
-                      : "bg-slate-50 text-slate-400 ring-1 ring-[var(--rf-border)]",
-                )}
-              >
-                {s.short}
-              </button>
-            ))}
+            {steps.map((s, index) => {
+              let label = s.short;
+              if (index === 1 && values.checklistItems.length > 0) {
+                label = `${s.short} (${values.checklistItems.length})`;
+              }
+              return (
+                <button
+                  key={s.short}
+                  type="button"
+                  onClick={() => goToStep(index)}
+                  className={cn(
+                    "shrink-0 rounded-full px-3.5 py-1 text-[11px] font-bold transition-all active:scale-[0.98]",
+                    index === step
+                      ? "bg-[var(--rf-primary)] text-white shadow-sm"
+                      : index < step
+                        ? "bg-[var(--rf-primary-light)] text-[var(--rf-primary-dark)]"
+                        : "bg-slate-50 text-slate-400 ring-1 ring-[var(--rf-border)]",
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            })}
             <div className="w-4 shrink-0" />
           </div>
         </div>

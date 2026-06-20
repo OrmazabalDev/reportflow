@@ -9,6 +9,7 @@ const styles: Record<BadgeValue, string> = {
   DONE: "bg-[var(--rf-success-bg)] text-[var(--rf-success-text)]",
   PENDING: "bg-slate-100 text-slate-600",
   OBSERVED: "bg-amber-50 text-amber-700",
+  NOT_APPLICABLE: "bg-slate-100 text-slate-500",
 };
 
 const labels: Record<BadgeValue, string> = {
@@ -17,6 +18,7 @@ const labels: Record<BadgeValue, string> = {
   DONE: "Realizado",
   PENDING: "Pendiente",
   OBSERVED: "Observado",
+  NOT_APPLICABLE: "No aplica",
 };
 
 export function StatusBadge({

@@ -37,7 +37,7 @@ export function EditorToolbar({
             disabled={pending}
             className="text-[13px] font-bold text-slate-500 hover:text-slate-800 active:scale-[0.98] transition-all py-2 text-left"
           >
-            Borrador
+            Guardar borrador
           </button>
         </div>
 

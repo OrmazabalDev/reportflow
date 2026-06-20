@@ -2,7 +2,7 @@ import { LocalImage } from "@/components/ui/local-image";
 import type { ReportWithRelations } from "@/lib/domain/types";
 import { formatDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/status-badge";
-import { AlertCircle, CheckCircle2, Circle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Circle, MinusCircle } from "lucide-react";
 
 function getFooterCopy(report: ReportWithRelations) {
   if (report.footerText) {
@@ -96,6 +96,8 @@ export function ReportPreview({ report }: { report: ReportWithRelations }) {
                   <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />
                 ) : item.status === "OBSERVED" ? (
                   <AlertCircle className="size-5 shrink-0 text-amber-500" />
+                ) : item.status === "NOT_APPLICABLE" ? (
+                  <MinusCircle className="size-5 shrink-0 text-slate-400" />
                 ) : (
                   <Circle className="size-5 shrink-0 text-slate-300" />
                 )}
