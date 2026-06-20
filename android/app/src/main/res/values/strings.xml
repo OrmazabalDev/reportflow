@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ReportFlow</string>
+    <string name="title_activity_main">ReportFlow</string>
+    <string name="package_name">com.valion.reportflow</string>
+    <string name="custom_url_scheme">com.valion.reportflow</string>
+</resources>

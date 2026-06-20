@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ReportStatus {
+  DRAFT
+  FINALIZED
+}
+
+enum ChecklistStatus {
+  DONE
+  PENDING
+  OBSERVED
+}
+
+model Report {
+  id             String          @id @default(cuid())
+  title          String
+  author         String
+  date           DateTime
+  description    String?
+  companyName    String?
+  companyLogoPath String?
+  footerText     String?
+  area           String?
+  status         ReportStatus    @default(DRAFT)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  findings       Finding[]
+  checklistItems ChecklistItem[]
+
+  @@index([createdAt(sort: Desc)])
+  @@index([status])
+}
+
+model Finding {
+  id        String   @id @default(cuid())
+  reportId  String
+  caption   String
+  note      String?
+  imagePath String?
+  sortOrder Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId, sortOrder])
+}
+
+model ChecklistItem {
+  id        String          @id @default(cuid())
+  reportId  String
+  text      String
+  note      String?
+  status    ChecklistStatus @default(PENDING)
+  sortOrder Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  report    Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId, sortOrder])
+}

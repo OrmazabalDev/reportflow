@@ -1,0 +1,20 @@
+services:
+  reportflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reportflow
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "file:/app/data/app.db"
+      APP_URL: "http://localhost:3000"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+    volumes:
+      - reportflow_data:/app/data
+      - reportflow_uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  reportflow_data:
+  reportflow_uploads:

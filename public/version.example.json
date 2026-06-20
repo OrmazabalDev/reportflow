@@ -1,0 +1,15 @@
+{
+  "appName": "ReportFlow",
+  "latestVersion": "0.1.1",
+  "latestBuild": 2,
+  "stage": "Beta",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build2/reportflow-v0.1.1-build2.apk",
+  "releaseNotes": [
+    "PDF optimizado con encabezado compacto",
+    "Checklist aparece antes que hallazgos",
+    "Grilla de imágenes en el PDF",
+    "Corrección de exportación PDF nativa en Android"
+  ],
+  "required": false,
+  "publishedAt": "2026-06-20"
+}

@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ReportFlow
 
-## Getting Started
+MVP funcional para crear reportes operativos con:
 
-First, run the development server:
+- información general
+- hallazgos con imagen local
+- checklist con estados
+- vista previa
+- exportación a PDF
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Prisma ORM
+- SQLite
+- Docker + docker-compose
+
+## Modelo
+
+- `Report`
+- `Finding`
+- `ChecklistItem`
+
+La estructura está preparada para migrar después a PostgreSQL porque Prisma separa modelo, persistencia, storage y UI.
+
+## Desarrollo local
+
+1. Instala dependencias:
+
+```bash
+npm install
+```
+
+2. Genera y aplica la base local:
+
+```bash
+npm run db:migrate -- --name init
+```
+
+3. Carga datos demo opcionales:
+
+```bash
+npm run db:seed
+```
+
+4. Levanta la app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Disponible en `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Persistencia:
 
-## Learn More
+- SQLite en `/app/data/app.db`
+- imágenes en `/app/uploads`
 
-To learn more about Next.js, take a look at the following resources:
+Levantar el MVP:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+docker compose up -d --build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Disponible en `http://localhost:3000`.
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run db:migrate -- --name init
+npm run db:deploy
+npm run db:seed
+npm run db:studio
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Funcionalidad incluida
+
+- dashboard con reportes recientes
+- historial con búsqueda
+- crear, editar y ver detalle de reportes
+- gestión completa de hallazgos
+- checklist con estados `DONE`, `PENDING`, `OBSERVED`
+- uploads locales por `POST /api/uploads`
+- vista previa de reporte
+- exportación PDF en `/reports/:id/pdf`
+
+## Variables de entorno
+
+- Local: `.env` usa `file:./dev.db`
+- Docker: `docker-compose.yml` usa `file:/app/data/app.db`
+
+## Seed
+
+El seed crea un reporte demo si la base está vacía.

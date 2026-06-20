@@ -1,0 +1,82 @@
+export enum ReportStatus {
+  DRAFT = "DRAFT",
+  FINALIZED = "FINALIZED",
+}
+
+export enum ChecklistStatus {
+  PENDING = "PENDING",
+  DONE = "DONE",
+  OBSERVED = "OBSERVED",
+}
+
+export type Finding = {
+  id: string;
+  reportId: string;
+  caption: string;
+  note: string | null;
+  imagePath: string | null;
+  sortOrder: number;
+};
+
+export type ChecklistItem = {
+  id: string;
+  reportId: string;
+  text: string;
+  note: string | null;
+  status: ChecklistStatus;
+  sortOrder: number;
+};
+
+export type Report = {
+  id: string;
+  title: string;
+  author: string;
+  date: string; // ISO String for dates in local domain
+  description: string | null;
+  companyName: string | null;
+  companyLogoPath: string | null;
+  footerText: string | null;
+  area: string | null;
+  status: ReportStatus;
+  createdAt: string; // ISO
+  updatedAt: string; // ISO
+};
+
+export type ReportWithRelations = Report & {
+  findings: Finding[];
+  checklistItems: ChecklistItem[];
+};
+
+export type EditableFinding = {
+  caption: string;
+  note: string;
+  imagePath: string | null;
+};
+
+export type EditableChecklistItem = {
+  text: string;
+  note: string;
+  status: ChecklistStatus;
+};
+
+export type ReportFormValues = {
+  id?: string;
+  title: string;
+  author: string;
+  date: string;
+  description: string;
+  companyName: string;
+  companyLogoPath: string | null;
+  footerText: string;
+  area: string;
+  status: ReportStatus;
+  findings: EditableFinding[];
+  checklistItems: EditableChecklistItem[];
+};
+
+export type SaveReportResult = {
+  ok: boolean;
+  reportId?: string;
+  title?: string;
+  error?: string;
+};
