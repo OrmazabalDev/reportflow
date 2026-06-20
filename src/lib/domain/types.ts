@@ -80,3 +80,24 @@ export type SaveReportResult = {
   title?: string;
   error?: string;
 };
+
+export type TemplateItem = {
+  id: string;
+  templateId: string;
+  text: string;
+  note: string | null;
+  sortOrder: number;
+};
+
+export type Template = {
+  id: string;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TemplateWithRelations = Template & {
+  items: TemplateItem[];
+};
+

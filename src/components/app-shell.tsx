@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { History, Home, PlusCircle, Shield } from "lucide-react";
+import { History, Home, PlusCircle, Shield, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/reports/new", label: "Nuevo", icon: PlusCircle },
   { href: "/reports", label: "Historial", icon: History },
+  { href: "/templates", label: "Plantillas", icon: FileText },
 ];
 
 function getPageTitle(pathname: string) {
@@ -18,6 +19,7 @@ function getPageTitle(pathname: string) {
   if (pathname === "/reports/preview") return "Vista previa";
   if (pathname === "/reports/detail") return "Detalle";
   if (pathname === "/reports") return "Historial";
+  if (pathname === "/templates") return "Plantillas";
   return "ReportFlow";
 }
 

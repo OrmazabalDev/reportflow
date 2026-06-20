@@ -7,9 +7,11 @@ import type {
   ChecklistItem,
   ReportWithRelations,
   ReportFormValues,
+  Template,
+  TemplateItem,
 } from "@/lib/domain/types";
 
-interface ReportFlowDB extends DBSchema {
+export interface ReportFlowDB extends DBSchema {
   reports: {
     key: string;
     value: Report;
@@ -31,14 +33,25 @@ interface ReportFlowDB extends DBSchema {
       "by-report": string;
     };
   };
+  templates: {
+    key: string;
+    value: Template;
+  };
+  template_items: {
+    key: string;
+    value: TemplateItem;
+    indexes: {
+      "by-template": string;
+    };
+  };
 }
 
 const DB_NAME = "reportflow-db";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise: Promise<IDBPDatabase<ReportFlowDB>> | null = null;
 
-function getDb() {
+export function getDb() {
   if (!dbPromise) {
     dbPromise = openDB<ReportFlowDB>(DB_NAME, DB_VERSION, {
       upgrade(db) {
@@ -55,6 +68,15 @@ function getDb() {
             keyPath: "id",
           });
           checklistStore.createIndex("by-report", "reportId");
+        }
+        if (!db.objectStoreNames.contains("templates")) {
+          db.createObjectStore("templates", { keyPath: "id" });
+        }
+        if (!db.objectStoreNames.contains("template_items")) {
+          const templateItemStore = db.createObjectStore("template_items", {
+            keyPath: "id",
+          });
+          templateItemStore.createIndex("by-template", "templateId");
         }
       },
     });
