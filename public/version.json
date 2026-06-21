@@ -1,13 +1,14 @@
 {
   "appName": "ReportFlow",
   "latestVersion": "0.1.1",
-  "latestBuild": 8,
+  "latestBuild": 9,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build8/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build9/reportbeta.apk",
   "releaseNotes": [
-    "Corrección de legibilidad en texto/iconos de botones primarios (color blanco forzado)",
-    "Revisión de responsive completa en panel de Ajustes y Onboarding",
-    "Optimización de flujo local y bases de datos"
+    "Sistema de exportación y restauración de copias de seguridad (.json) con imágenes en Base64.",
+    "Limpieza e inyección de datos con reinicio del estado global.",
+    "Políticas de privacidad y Términos de uso legales offline integradas.",
+    "Reorganización del menú de ajustes por pestañas."
   ],
   "required": false,
   "publishedAt": "2026-06-20"
