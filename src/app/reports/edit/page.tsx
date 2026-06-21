@@ -1,4 +1,4 @@
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 import { EditReportView } from "@/components/views/edit-report-view";
 
 export default function EditReportPage() {

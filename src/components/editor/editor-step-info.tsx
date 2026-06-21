@@ -260,6 +260,21 @@ export function EditorStepInfo({
                 />
               </div>
             </div>
+            
+            <div className="pt-3 border-t border-slate-100">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={values.includeSignatures || false}
+                  onChange={(e) => {
+                    onError(null);
+                    onValuesChange((current) => ({ ...current, includeSignatures: e.target.checked }));
+                  }}
+                  className="rounded border-slate-300 text-[var(--rf-primary)] focus:ring-[var(--rf-primary)] size-4"
+                />
+                <span className="text-xs font-semibold text-slate-700">Incluir líneas de firma en el PDF</span>
+              </label>
+            </div>
           </div>
         )}
       </section>

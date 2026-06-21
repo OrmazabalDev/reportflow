@@ -12,7 +12,7 @@ export default function NewReportPage() {
       mode="create"
       initialValues={{
         title: "",
-        author: "Diego Ormazabal",
+        author: "",
         date: new Date().toISOString().split("T")[0] ?? "",
         description: "",
         companyName: "",
@@ -20,6 +20,7 @@ export default function NewReportPage() {
         footerText: "",
         area: "",
         status: ReportStatus.DRAFT,
+        includeSignatures: false,
         findings: [],
         checklistItems: [],
       }}

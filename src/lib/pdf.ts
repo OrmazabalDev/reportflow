@@ -16,9 +16,13 @@ const colors = {
   panel: rgb(0.97, 0.98, 0.99),
   primary: rgb(0.19, 0.28, 0.39),
   done: rgb(0.12, 0.55, 0.35),
+  doneBg: rgb(0.92, 0.97, 0.94),
   observed: rgb(0.78, 0.52, 0.11),
+  observedBg: rgb(0.99, 0.97, 0.92),
   pending: rgb(0.45, 0.49, 0.56),
+  pendingBg: rgb(0.95, 0.96, 0.97),
   notApplicable: rgb(0.55, 0.59, 0.66),
+  notApplicableBg: rgb(0.95, 0.96, 0.97),
 };
 
 type TextOptions = {
@@ -163,9 +167,9 @@ export async function buildReportPdf(report: ReportWithRelations) {
   };
 
   // --- A. Encabezado Compacto ---
-  const headerHeight = 60;
+  const headerHeight = 45;
   const hasLogo = Boolean(report.companyLogoPath);
-  const headerLeftOffset = hasLogo ? margin + 90 : margin;
+  const headerLeftOffset = hasLogo ? margin + 80 : margin;
 
   if (hasLogo) {
     await drawStoredImage(
@@ -173,39 +177,47 @@ export async function buildReportPdf(report: ReportWithRelations) {
       page,
       report.companyLogoPath!,
       margin,
-      cursorY - 40,
-      80,
-      40,
+      cursorY - 35,
+      70,
+      35,
       regular,
       "Logo"
     );
   }
   
-  const statusLabels: Record<string, string> = { DRAFT: "Borrador", FINAL: "FINALIZADO", ARCHIVED: "Archivado" };
+  const statusLabels: Record<string, string> = { DRAFT: "Borrador", FINALIZED: "Finalizado", FINAL: "Finalizado", ARCHIVED: "Archivado" };
   const statusText = statusLabels[report.status] || report.status;
 
-  const empresaText = (report.companyName || "Empresa").toUpperCase();
-  const tituloText = (report.title || "Reporte Operativo").toUpperCase();
-  drawTextBlock(page, empresaText, headerLeftOffset, cursorY, { font: bold, size: 10, color: colors.muted });
+  // Left Column: Empresa y Área
+  const empresaText = report.companyName || "Personal / General";
+  const areaText = report.area ? `${report.area}` : "";
   
-  const titleWidth = bold.widthOfTextAtSize(tituloText, 10);
-  drawTextBlock(page, tituloText, pageWidth - margin - titleWidth, cursorY, { font: bold, size: 10, color: colors.primary });
+  page.drawText(empresaText.toUpperCase(), { x: headerLeftOffset, y: cursorY, size: 9, font: bold, color: colors.primary });
+  if (areaText) {
+    page.drawText(areaText, { x: headerLeftOffset, y: cursorY - 11, size: 8, font: regular, color: colors.muted });
+  }
 
-  const areaText = report.area || "Área/Unidad";
-  drawTextBlock(page, areaText, headerLeftOffset, cursorY - 14, { font: regular, size: 10, color: colors.muted });
-  
-  const estadoText = `Estado: ${statusText}`;
-  const estadoWidth = bold.widthOfTextAtSize(estadoText, 10);
-  drawTextBlock(page, estadoText, pageWidth - margin - estadoWidth, cursorY - 14, { font: bold, size: 10, color: colors.primary });
-
+  // Right Column: Título, Autor, Fecha y Estado
+  const rightColX = pageWidth - margin - 230; // 230px max width for right col
+  const tituloText = report.title || "Reporte";
   const formattedDate = formatDate(report.date);
-  const linea3 = `Fecha: ${formattedDate} | Autor: ${report.author || "N/A"}${report.area ? ` | Área: ${report.area}` : ""}`;
-  drawTextBlock(page, linea3, headerLeftOffset, cursorY - 34, { font: regular, size: 10, color: colors.ink });
+  const metaText = `${formattedDate} · ${report.author || "N/A"}`;
+  const estadoText = `Estado: ${statusText}`;
+
+  let currentRightY = cursorY;
+  // Draw title
+  const titleLines = splitText(tituloText.toUpperCase(), bold, 9, 230);
+  for (const line of titleLines) {
+    page.drawText(line, { x: rightColX, y: currentRightY, size: 9, font: bold, color: colors.ink });
+    currentRightY -= 11;
+  }
+  page.drawText(metaText, { x: rightColX, y: currentRightY, size: 8, font: regular, color: colors.muted });
+  page.drawText(estadoText, { x: rightColX, y: currentRightY - 11, size: 8, font: bold, color: colors.primary });
 
   cursorY -= headerHeight;
 
   page.drawLine({ start: { x: margin, y: cursorY }, end: { x: pageWidth - margin, y: cursorY }, thickness: 1, color: colors.line });
-  cursorY -= 20;
+  cursorY -= 12;
 
   // --- B. Resumen Ejecutivo ---
   if (report.description) {
@@ -230,47 +242,77 @@ export async function buildReportPdf(report: ReportWithRelations) {
     cursorY -= 20;
 
     for (const [index, item] of report.checklistItems.entries()) {
-      const itemLines = splitText(item.text || "", bold, 10, pageWidth - margin * 2 - 140);
-      const noteLines = item.note ? splitText(item.note, regular, 9, pageWidth - margin * 2 - 140) : [];
-      const itemHeight = Math.max(24, (itemLines.length * 14) + (noteLines.length * 12) + 16);
+      const itemLines = splitText(item.text || "", bold, 9, pageWidth - margin * 2 - 140);
+      const noteLines = item.note ? splitText(item.note, regular, 8, pageWidth - margin * 2 - 140) : [];
+      const itemHeight = Math.max(20, (itemLines.length * 12) + (noteLines.length * 10) + 10);
       
       checkPageBreak(itemHeight);
 
       // Nº
-      drawTextBlock(page, `${index + 1}`, margin + 5, cursorY - 16, { font: regular, size: 10, color: colors.muted });
+      drawTextBlock(page, `${index + 1}`, margin + 5, cursorY - 12, { font: regular, size: 9, color: colors.muted });
       
       // Ítem
-      let textY = cursorY - 16;
+      let textY = cursorY - 12;
       for (const line of itemLines) {
-        page.drawText(line, { x: margin + 30, y: textY, size: 10, font: bold, color: colors.ink });
-        textY -= 14;
+        page.drawText(line, { x: margin + 30, y: textY, size: 9, font: bold, color: colors.ink });
+        textY -= 12;
       }
       
       if (noteLines.length > 0) {
-        textY -= 2;
+        textY -= 1;
         for (const line of noteLines) {
-          page.drawText(line, { x: margin + 30, y: textY, size: 9, font: regular, color: colors.body });
-          textY -= 12;
+          page.drawText(line, { x: margin + 30, y: textY, size: 8, font: regular, color: colors.body });
+          textY -= 10;
         }
       }
 
       // Estado
       let statusLabel = "Pendiente";
       let statusColor = colors.pending;
+      let statusBgColor = colors.pendingBg;
 
       if (item.status === "DONE") {
         statusLabel = "Realizado";
         statusColor = colors.done;
+        statusBgColor = colors.doneBg;
       } else if (item.status === "OBSERVED") {
         statusLabel = "Observado";
         statusColor = colors.observed;
+        statusBgColor = colors.observedBg;
       } else if (item.status === "NOT_APPLICABLE") {
         statusLabel = "No aplica";
         statusColor = colors.notApplicable;
+        statusBgColor = colors.notApplicableBg;
       }
+
+      // Draw Badge Background
+      const badgeWidth = 70;
+      const badgeHeight = 14;
+      const badgeX = pageWidth - margin - badgeWidth;
+      const badgeY = cursorY - 15;
       
-      page.drawRectangle({ x: pageWidth - margin - 100, y: cursorY - 22, width: 8, height: 8, color: statusColor });
-      drawTextBlock(page, statusLabel, pageWidth - margin - 86, cursorY - 16, { font: bold, size: 9, color: statusColor });
+      page.drawRectangle({
+        x: badgeX,
+        y: badgeY,
+        width: badgeWidth,
+        height: badgeHeight,
+        color: statusBgColor,
+        borderColor: statusColor,
+        borderWidth: 0.5,
+      });
+
+      // Centered Text inside badge
+      const textWidth = bold.widthOfTextAtSize(statusLabel, 7);
+      const textX = badgeX + (badgeWidth - textWidth) / 2;
+      const badgeTextY = badgeY + 4;
+      
+      page.drawText(statusLabel, {
+        x: textX,
+        y: badgeTextY,
+        size: 7,
+        font: bold,
+        color: statusColor,
+      });
 
       cursorY -= itemHeight;
       page.drawLine({ start: { x: margin, y: cursorY }, end: { x: pageWidth - margin, y: cursorY }, thickness: 1, color: colors.line });
@@ -286,49 +328,116 @@ export async function buildReportPdf(report: ReportWithRelations) {
     drawTextBlock(page, `Total de hallazgos registrados: ${report.findings.length}`, margin, cursorY, { font: regular, size: 10, color: colors.muted });
     cursorY -= 30;
 
-    const colWidth = (pageWidth - margin * 2 - 20) / 2;
-    const imgHeight = 160;
-    const blockHeight = imgHeight + 80;
-
-    for (let i = 0; i < report.findings.length; i += 2) {
-      checkPageBreak(blockHeight);
+    if (report.findings.length === 1) {
+      // Dibujar 1 sola imagen a ancho completo
+      const item = report.findings[0];
+      const fullWidth = pageWidth - margin * 2;
+      const imgHeight = 240;
       
-      const item1 = report.findings[i];
-      const item2 = report.findings[i + 1];
+      // Calculate caption lines and note lines to estimate block height
+      const captionLines = splitText(`Hallazgo 1: ${item.caption || "Sin título"}`, bold, 10, fullWidth);
+      const noteLines = item.note ? splitText(item.note, regular, 9, fullWidth) : [];
+      const textHeight = (captionLines.length * 14) + (noteLines.length * 12) + 10;
+      const blockHeight = imgHeight + textHeight + 15;
 
-      // Primera columna
-      await drawStoredImage(pdfDoc, page, item1.imagePath, margin, cursorY - imgHeight, colWidth, imgHeight, regular, "Sin evidencia adjunta");
-      drawTextBlock(page, `Hallazgo ${i + 1}: ${item1.caption || "Sin título"}`, margin, cursorY - imgHeight - 20, { font: bold, size: 10, color: colors.ink, maxWidth: colWidth });
-      if (item1.note) {
-        drawTextBlock(page, item1.note, margin, cursorY - imgHeight - 34, { font: regular, size: 9, color: colors.body, maxWidth: colWidth, lineHeight: 12 });
+      checkPageBreak(blockHeight);
+
+      await drawStoredImage(pdfDoc, page, item.imagePath, margin, cursorY - imgHeight, fullWidth, imgHeight, regular, "Sin evidencia adjunta");
+      
+      let textCursorY = cursorY - imgHeight - 16;
+      for (const line of captionLines) {
+        page.drawText(line, { x: margin, y: textCursorY, size: 10, font: bold, color: colors.ink });
+        textCursorY -= 14;
       }
-
-      // Segunda columna (si existe)
-      if (item2) {
-        const x2 = margin + colWidth + 20;
-        await drawStoredImage(pdfDoc, page, item2.imagePath, x2, cursorY - imgHeight, colWidth, imgHeight, regular, "Sin evidencia adjunta");
-        drawTextBlock(page, `Hallazgo ${i + 2}: ${item2.caption || "Sin título"}`, x2, cursorY - imgHeight - 20, { font: bold, size: 10, color: colors.ink, maxWidth: colWidth });
-        if (item2.note) {
-          drawTextBlock(page, item2.note, x2, cursorY - imgHeight - 34, { font: regular, size: 9, color: colors.body, maxWidth: colWidth, lineHeight: 12 });
+      
+      if (noteLines.length > 0) {
+        textCursorY -= 2;
+        for (const line of noteLines) {
+          page.drawText(line, { x: margin, y: textCursorY, size: 9, font: regular, color: colors.body });
+          textCursorY -= 12;
         }
       }
 
       cursorY -= blockHeight;
+    } else {
+      // Dibujar grilla de 2 columnas
+      const colWidth = (pageWidth - margin * 2 - 20) / 2;
+      const imgHeight = 160;
+      
+      for (let i = 0; i < report.findings.length; i += 2) {
+        const item1 = report.findings[i];
+        const item2 = report.findings[i + 1];
+
+        // Calculate max text height between col 1 and col 2
+        const capLines1 = splitText(`Hallazgo ${i + 1}: ${item1.caption || "Sin título"}`, bold, 10, colWidth);
+        const noteLines1 = item1.note ? splitText(item1.note, regular, 9, colWidth) : [];
+        const textH1 = (capLines1.length * 14) + (noteLines1.length * 12) + 10;
+
+        let textH2 = 0;
+        let capLines2: string[] = [];
+        let noteLines2: string[] = [];
+        if (item2) {
+          capLines2 = splitText(`Hallazgo ${i + 2}: ${item2.caption || "Sin título"}`, bold, 10, colWidth);
+          noteLines2 = item2.note ? splitText(item2.note, regular, 9, colWidth) : [];
+          textH2 = (capLines2.length * 14) + (noteLines2.length * 12) + 10;
+        }
+
+        const blockHeight = imgHeight + Math.max(textH1, textH2) + 15;
+        checkPageBreak(blockHeight);
+
+        // Columna 1
+        await drawStoredImage(pdfDoc, page, item1.imagePath, margin, cursorY - imgHeight, colWidth, imgHeight, regular, "Sin evidencia adjunta");
+        let textY1 = cursorY - imgHeight - 16;
+        for (const line of capLines1) {
+          page.drawText(line, { x: margin, y: textY1, size: 10, font: bold, color: colors.ink });
+          textY1 -= 14;
+        }
+        if (noteLines1.length > 0) {
+          textY1 -= 2;
+          for (const line of noteLines1) {
+            page.drawText(line, { x: margin, y: textY1, size: 9, font: regular, color: colors.body });
+            textY1 -= 12;
+          }
+        }
+
+        // Columna 2
+        if (item2) {
+          const x2 = margin + colWidth + 20;
+          await drawStoredImage(pdfDoc, page, item2.imagePath, x2, cursorY - imgHeight, colWidth, imgHeight, regular, "Sin evidencia adjunta");
+          let textY2 = cursorY - imgHeight - 16;
+          for (const line of capLines2) {
+            page.drawText(line, { x: x2, y: textY2, size: 10, font: bold, color: colors.ink });
+            textY2 -= 14;
+          }
+          if (noteLines2.length > 0) {
+            textY2 -= 2;
+            for (const line of noteLines2) {
+              page.drawText(line, { x: x2, y: textY2, size: 9, font: regular, color: colors.body });
+              textY2 -= 12;
+            }
+          }
+        }
+
+        cursorY -= blockHeight;
+      }
     }
+    cursorY -= 15;
   }
 
   // --- F. Firmas ---
-  checkPageBreak(120);
-  cursorY -= 60;
-  
-  const sigWidth = 160;
-  // Firma Izquierda
-  page.drawLine({ start: { x: margin + 20, y: cursorY }, end: { x: margin + 20 + sigWidth, y: cursorY }, thickness: 1, color: colors.ink });
-  drawTextBlock(page, "Firma Responsable", margin + 20, cursorY - 16, { font: bold, size: 9, color: colors.muted });
-  
-  // Firma Derecha
-  page.drawLine({ start: { x: pageWidth - margin - sigWidth - 20, y: cursorY }, end: { x: pageWidth - margin - 20, y: cursorY }, thickness: 1, color: colors.ink });
-  drawTextBlock(page, "Firma Revisión / Aprobación", pageWidth - margin - sigWidth - 20, cursorY - 16, { font: bold, size: 9, color: colors.muted });
+  if (report.includeSignatures !== false) {
+    checkPageBreak(120);
+    cursorY -= 50;
+    
+    const sigWidth = 160;
+    // Firma Izquierda
+    page.drawLine({ start: { x: margin + 20, y: cursorY }, end: { x: margin + 20 + sigWidth, y: cursorY }, thickness: 1, color: colors.ink });
+    drawTextBlock(page, "Firma Responsable", margin + 20, cursorY - 16, { font: bold, size: 9, color: colors.muted });
+    
+    // Firma Derecha
+    page.drawLine({ start: { x: pageWidth - margin - sigWidth - 20, y: cursorY }, end: { x: pageWidth - margin - 20, y: cursorY }, thickness: 1, color: colors.ink });
+    drawTextBlock(page, "Firma Revisión / Aprobación", pageWidth - margin - sigWidth - 20, cursorY - 16, { font: bold, size: 9, color: colors.muted });
+  }
 
   // --- Pie de página y paginación en todas las hojas ---
   const pages = pdfDoc.getPages();

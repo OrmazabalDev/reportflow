@@ -23,6 +23,7 @@ export type ReportFormValues = {
   footerText: string;
   area: string;
   status: ReportStatus;
+  includeSignatures: boolean;
   findings: EditableFinding[];
   checklistItems: EditableChecklistItem[];
 };

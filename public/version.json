@@ -1,15 +1,15 @@
 {
   "appName": "ReportFlow",
-  "latestVersion": "0.1.1",
-  "latestBuild": 9,
+  "latestVersion": "0.1.2",
+  "latestBuild": 10,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.1-build9/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.2-build10/reportbeta.apk",
   "releaseNotes": [
-    "Sistema de exportación y restauración de copias de seguridad (.json) con imágenes en Base64.",
-    "Limpieza e inyección de datos con reinicio del estado global.",
-    "Políticas de privacidad y Términos de uso legales offline integradas.",
-    "Reorganización del menú de ajustes por pestañas."
+    "Guardar reporte real directamente como plantilla reutilizable.",
+    "Creación masiva de ítems mediante carga de texto por líneas.",
+    "PDF más compacto y optimizado (cabecera horizontal y grilla de fotos inteligente).",
+    "Opción para ocultar o mostrar líneas de firma en el PDF."
   ],
   "required": false,
-  "publishedAt": "2026-06-20"
+  "publishedAt": "2026-06-21"
 }

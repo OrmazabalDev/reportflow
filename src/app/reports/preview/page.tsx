@@ -1,4 +1,4 @@
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 import { PreviewReportView } from "@/components/views/preview-report-view";
 
 export default function ReportPreviewPage() {

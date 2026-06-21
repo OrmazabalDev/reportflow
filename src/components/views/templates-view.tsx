@@ -26,6 +26,34 @@ export function TemplatesView() {
   const [items, setItems] = useState<{ text: string; note: string }[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
 
+  const [showBulkInput, setShowBulkInput] = useState(false);
+  const [bulkText, setBulkText] = useState("");
+
+  const handleProcessBulkItems = () => {
+    const lines = bulkText
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      toast("No se ingresaron ítems válidos", "error");
+      return;
+    }
+
+    const newItems = lines.map((line) => ({ text: line, note: "" }));
+    
+    setItems((current) => {
+      if (current.length === 1 && current[0].text.trim() === "" && current[0].note.trim() === "") {
+        return newItems;
+      }
+      return [...current, ...newItems];
+    });
+
+    toast(`${lines.length} ítems agregados`, "success");
+    setBulkText("");
+    setShowBulkInput(false);
+  };
+
   // Confirm delete states
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -51,6 +79,8 @@ export function TemplatesView() {
     setDescription("");
     setItems([{ text: "", note: "" }]);
     setFormError(null);
+    setShowBulkInput(false);
+    setBulkText("");
     setIsEditing(true);
   };
 
@@ -60,6 +90,8 @@ export function TemplatesView() {
     setDescription(template.description || "");
     setItems(template.items.map((i) => ({ text: i.text, note: i.note || "" })));
     setFormError(null);
+    setShowBulkInput(false);
+    setBulkText("");
     setIsEditing(true);
   };
 
@@ -227,10 +259,66 @@ export function TemplatesView() {
             <h3 className="text-base font-bold text-slate-900">
               Puntos del Checklist ({items.length})
             </h3>
-            <Button variant="secondary" size="sm" icon={<Plus />} onClick={handleAddItem}>
-              Añadir item
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowBulkInput(!showBulkInput)}
+              >
+                Carga masiva
+              </Button>
+              <Button variant="secondary" size="sm" icon={<Plus />} onClick={handleAddItem}>
+                Añadir item
+              </Button>
+            </div>
           </div>
+
+          {showBulkInput && (
+            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-3 animate-in fade-in duration-150 shadow-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-700">
+                  Agregar múltiples ítems (uno por línea)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowBulkInput(false);
+                    setBulkText("");
+                  }}
+                  className="text-xs font-bold text-slate-400 hover:text-slate-600 transition"
+                >
+                  Ocultar
+                </button>
+              </div>
+              <textarea
+                value={bulkText}
+                onChange={(e) => setBulkText(e.target.value)}
+                placeholder="Ej:&#10;Verificar cableado eléctrico&#10;Probar el generador de respaldo&#10;Limpiar filtros de aire"
+                className={cn(textAreaClass, "min-h-[120px] font-mono text-xs")}
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-[38px] py-1 px-3 text-xs"
+                  onClick={() => {
+                    setShowBulkInput(false);
+                    setBulkText("");
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="min-h-[38px] py-1 px-3 text-xs"
+                  onClick={handleProcessBulkItems}
+                >
+                  Añadir ítems
+                </Button>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-3">
             {items.map((item, index) => (

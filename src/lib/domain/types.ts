@@ -39,6 +39,7 @@ export type Report = {
   footerText: string | null;
   area: string | null;
   status: ReportStatus;
+  includeSignatures?: boolean;
   createdAt: string; // ISO
   updatedAt: string; // ISO
 };
@@ -71,6 +72,7 @@ export type ReportFormValues = {
   footerText: string;
   area: string;
   status: ReportStatus;
+  includeSignatures: boolean;
   findings: EditableFinding[];
   checklistItems: EditableChecklistItem[];
 };

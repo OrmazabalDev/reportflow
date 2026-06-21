@@ -165,6 +165,7 @@ export class IndexedDbReportRepository implements ReportRepository {
       footerText: report.footerText ?? "",
       area: report.area ?? "",
       status: report.status,
+      includeSignatures: report.includeSignatures ?? true,
       findings: report.findings.map((f) => ({
         caption: f.caption,
         note: f.note ?? "",
@@ -195,6 +196,7 @@ export class IndexedDbReportRepository implements ReportRepository {
       footerText: input.footerText || null,
       area: input.area || null,
       status: input.status,
+      includeSignatures: input.includeSignatures,
       createdAt: isNew ? now : (await db.get("reports", id))?.createdAt || now,
       updatedAt: now,
     };
