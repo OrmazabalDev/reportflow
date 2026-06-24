@@ -74,3 +74,18 @@ Todos los cambios notables e hitos del proyecto ReportFlow serán documentados e
 * Pantalla bloqueante de Onboarding inicial para configurar los datos del inspector y la primera empresa corporativa.
 * Autocompletado del autor del reporte basado en los datos del perfil local.
 * Dropdown *"Autocompletar desde Empresa"* para inyectar logotipos corporativos y marcas de pie de página en los reportes en edición.
+
+---
+
+## [v0.1.0] - 2026-06-01
+### Added (Builds 5 y 6 - Checklists y Ordenamiento)
+* Selector de estados de checklist mobile (Pendiente, Realizado, Observado, No aplica).
+* Ordenamiento por drag and drop en checklists manuales y fotos de hallazgos en IndexedDB.
+
+---
+
+## [v0.1.0] - 2026-05-15
+### Added (Builds 1 a 4 - Cimientos y PDF local)
+* Generación nativa y offline de PDFs corporativos.
+* Empaquetamiento del motor Next.js a APK nativo vía Capacitor.
+* Notificador automático de actualizaciones desde servidor en la nube.

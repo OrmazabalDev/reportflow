@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "changelog": "node scripts/generate-changelog.js",
+    "predev": "npm run changelog",
+    "prebuild": "npm run changelog",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

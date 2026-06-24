@@ -29,6 +29,7 @@ import { APP_VERSION, APP_BUILD_NUMBER, APP_NAME, APP_STAGE } from "@/lib/versio
 import type { UserProfile, Company } from "@/lib/domain/types";
 import { cn } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
+import changelogData from "@/lib/changelog.json";
 
 export function SettingsView() {
   const { toast } = useToast();
@@ -610,64 +611,30 @@ export function SettingsView() {
             </h3>
             
             <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100 pl-8">
-              {/* Build 9 */}
-              <div className="relative">
-                <div className="absolute size-3 rounded-full bg-[var(--rf-primary)] border-2 border-white ring-4 ring-slate-100 -left-8 top-1"></div>
-                <h4 className="text-xs font-bold text-slate-900">Build 9 (Versión Actual)</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Junio 2026</p>
-                <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
-                  <li>Sistema de exportación y restauración de copias de seguridad (.json) con imágenes en Base64.</li>
-                  <li>Limpieza e inyección de datos con reinicio del estado global.</li>
-                  <li>Políticas de privacidad y Términos de uso legales offline integradas.</li>
-                  <li>Reorganización del menú de ajustes por pestañas.</li>
-                </ul>
-              </div>
-
-              {/* Build 8 */}
-              <div className="relative">
-                <div className="absolute size-3 rounded-full bg-slate-300 border-2 border-white ring-4 ring-slate-50 -left-8 top-1"></div>
-                <h4 className="text-xs font-bold text-slate-800">Build 8</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Junio 2026</p>
-                <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
-                  <li>Migración segura de base de datos local v2 a v3 sin pérdida.</li>
-                  <li>Validación estática completa y corrección de legibilidad en botones primarios.</li>
-                  <li>Configuración inicial e integración de perfiles en el menú lateral.</li>
-                </ul>
-              </div>
-
-              {/* Build 7 */}
-              <div className="relative">
-                <div className="absolute size-3 rounded-full bg-slate-300 border-2 border-white ring-4 ring-slate-50 -left-8 top-1"></div>
-                <h4 className="text-xs font-bold text-slate-800">Build 7</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Junio 2026</p>
-                <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
-                  <li>Onboarding inicial bloqueante para registrar datos básicos de inspector.</li>
-                  <li>CRUD para múltiples organizaciones corporativas con subida de logotipos corporativos.</li>
-                </ul>
-              </div>
-
-              {/* Build 5-6 */}
-              <div className="relative">
-                <div className="absolute size-3 rounded-full bg-slate-300 border-2 border-white ring-4 ring-slate-50 -left-8 top-1"></div>
-                <h4 className="text-xs font-bold text-slate-800">Builds 5 y 6</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Mayo/Junio 2026</p>
-                <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
-                  <li>Selector de estados de checklist mobile (Pendiente, Realizado, Observado, No aplica).</li>
-                  <li>Ordenamiento por drag and drop en checklists manuales y fotos de hallazgos en IndexedDB.</li>
-                </ul>
-              </div>
-
-              {/* Build 1-4 */}
-              <div className="relative">
-                <div className="absolute size-3 rounded-full bg-slate-300 border-2 border-white ring-4 ring-slate-50 -left-8 top-1"></div>
-                <h4 className="text-xs font-bold text-slate-800">Builds 1 a 4</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Mayo 2026</p>
-                <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
-                  <li>Generación nativa y offline de PDFs corporativos.</li>
-                  <li>Empaquetamiento del motor Next.js a APK nativo vía Capacitor.</li>
-                  <li>Notificador automático de actualizaciones desde servidor en la nube.</li>
-                </ul>
-              </div>
+              {changelogData.map((entry, index) => {
+                const isCurrent = entry.build.toLowerCase().includes(`build ${APP_BUILD_NUMBER}`);
+                return (
+                  <div key={index} className="relative">
+                    <div
+                      className={cn(
+                        "absolute size-3 rounded-full border-2 border-white ring-4 -left-8 top-1",
+                        isCurrent
+                          ? "bg-[var(--rf-primary)] ring-slate-100"
+                          : "bg-slate-300 ring-slate-50"
+                      )}
+                    ></div>
+                    <h4 className={cn("text-xs font-bold", isCurrent ? "text-slate-900" : "text-slate-800")}>
+                      {entry.build} {isCurrent && "(Versión Actual)"}
+                    </h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{entry.date}</p>
+                    <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
+                      {entry.items.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           </section>
         </div>
