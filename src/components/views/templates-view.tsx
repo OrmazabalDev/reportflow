@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/toast";
 import { templateRepository } from "@/lib/infrastructure/IndexedDbTemplateRepository";
 import type { TemplateWithRelations } from "@/lib/domain/types";
 import { fieldClass, fieldLabelClass, textAreaClass } from "@/components/editor/editor-shared";
-import { cn } from "@/lib/utils";
+import { cn, parseBulkItems } from "@/lib/utils";
 
 export function TemplatesView() {
   const { toast } = useToast();
@@ -30,17 +30,12 @@ export function TemplatesView() {
   const [bulkText, setBulkText] = useState("");
 
   const handleProcessBulkItems = () => {
-    const lines = bulkText
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
+    const newItems = parseBulkItems(bulkText);
 
-    if (lines.length === 0) {
+    if (newItems.length === 0) {
       toast("No se ingresaron ítems válidos", "error");
       return;
     }
-
-    const newItems = lines.map((line) => ({ text: line, note: "" }));
     
     setItems((current) => {
       if (current.length === 1 && current[0].text.trim() === "" && current[0].note.trim() === "") {
@@ -49,7 +44,7 @@ export function TemplatesView() {
       return [...current, ...newItems];
     });
 
-    toast(`${lines.length} ítems agregados`, "success");
+    toast(`${newItems.length} ítems agregados`, "success");
     setBulkText("");
     setShowBulkInput(false);
   };

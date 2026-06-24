@@ -5,7 +5,7 @@ import { ChecklistStatus, ReportStatus } from "@/lib/domain/types";
 import { AlertCircle, CheckCircle2, Circle, MinusCircle } from "lucide-react";
 import { StatusBadge } from "@/components/status-badge";
 import { SectionHeader } from "@/components/editor/editor-ui";
-import type { ReportFormValues } from "@/lib/types";
+import type { ReportFormValues } from "@/lib/domain/types";
 import { cn } from "@/lib/utils";
 
 export function EditorStepSummary({ values }: { values: ReportFormValues }) {

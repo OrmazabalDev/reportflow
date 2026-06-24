@@ -1,15 +1,15 @@
 {
   "appName": "ReportFlow",
   "latestVersion": "0.1.2",
-  "latestBuild": 10,
+  "latestBuild": 12,
   "stage": "Beta",
-  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.2-build10/reportbeta.apk",
+  "apkUrl": "https://github.com/OrmazabalDev/reportflow/releases/download/v0.1.2-build12/reportbeta.apk",
   "releaseNotes": [
-    "Guardar reporte real directamente como plantilla reutilizable.",
-    "Creación masiva de ítems mediante carga de texto por líneas.",
-    "PDF más compacto y optimizado (cabecera horizontal y grilla de fotos inteligente).",
-    "Opción para ocultar o mostrar líneas de firma en el PDF."
+    "Suite de pruebas unitarias con Vitest y fake-indexeddb para mayor confiabilidad.",
+    "Pruebas de extremo a extremo (E2E) con Playwright para verificar flujos clave.",
+    "Refactorización y optimización de procesamiento de checklists.",
+    "Reorganización y base de documentación técnica estructurada en docs/."
   ],
   "required": false,
-  "publishedAt": "2026-06-21"
+  "publishedAt": "2026-06-24"
 }

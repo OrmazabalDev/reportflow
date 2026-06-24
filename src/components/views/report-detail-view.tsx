@@ -10,7 +10,7 @@ import { reportRepository } from "@/lib/infrastructure/IndexedDbReportRepository
 import { templateRepository } from "@/lib/infrastructure/IndexedDbTemplateRepository";
 import type { ReportWithRelations } from "@/lib/domain/types";
 import { downloadReportPdf } from "@/lib/pdf";
-import { formatDate } from "@/lib/utils";
+import { formatDate, convertReportToChecklistItems } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
 export function ReportDetailView() {
@@ -41,10 +41,7 @@ export function ReportDetailView() {
     }
 
     try {
-      const itemsToSave = report.checklistItems.map((item) => ({
-        text: item.text.trim(),
-        note: (item.note || "").trim(),
-      }));
+      const itemsToSave = convertReportToChecklistItems(report.checklistItems);
 
       await templateRepository.saveTemplate({
         name: newTemplateName.trim(),

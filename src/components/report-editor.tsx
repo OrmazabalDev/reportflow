@@ -19,7 +19,7 @@ import {
   validateStep,
   validateForPreview,
 } from "@/components/editor/editor-shared";
-import type { ReportFormValues } from "@/lib/types";
+import type { ReportFormValues } from "@/lib/domain/types";
 import { cn } from "@/lib/utils";
 
 const steps = [

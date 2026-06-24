@@ -49,3 +49,20 @@ export function absoluteUrl(path: string) {
 
   return new URL(path, base).toString();
 }
+
+export function parseBulkItems(text: string): { text: string; note: string }[] {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => ({ text: line, note: "" }));
+}
+
+export function convertReportToChecklistItems(
+  checklistItems: { text: string; note?: string | null }[]
+): { text: string; note: string }[] {
+  return checklistItems.map((item) => ({
+    text: item.text.trim(),
+    note: (item.note || "").trim(),
+  }));
+}

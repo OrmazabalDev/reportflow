@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { SectionHeader, FieldLabel } from "@/components/editor/editor-ui";
 import { fieldClass, textAreaClass, type EditorStepProps } from "@/components/editor/editor-shared";
-import type { ReportFormValues } from "@/lib/types";
+import type { ReportFormValues } from "@/lib/domain/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { profileRepository } from "@/lib/infrastructure/IndexedDbProfileRepository";
