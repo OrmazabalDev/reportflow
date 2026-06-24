@@ -31,6 +31,36 @@ import { cn } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
 import changelogData from "@/lib/changelog.json";
 
+function parseMarkdown(text: string): React.ReactNode[] {
+  const tokenRegex = /(\*\*.*?\*\*|`.*?`|\[.*?\]\(.*?\))/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const boldText = part.slice(2, -2);
+      return <strong key={index} className="font-semibold text-slate-950">{boldText}</strong>;
+    }
+    if (part.startsWith("`") && part.endsWith("`")) {
+      const codeText = part.slice(1, -1);
+      return (
+        <code key={index} className="px-1 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-800 font-mono text-[10px]">
+          {codeText}
+        </code>
+      );
+    }
+    if (part.startsWith("[") && part.includes("](")) {
+      const closingBracket = part.indexOf("]");
+      const label = part.slice(1, closingBracket);
+      return (
+        <span key={index} className="underline decoration-slate-300 text-slate-700 font-medium">
+          {label}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
 export function SettingsView() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"profile" | "backup" | "about">("profile");
@@ -629,7 +659,7 @@ export function SettingsView() {
                     <p className="text-[11px] text-slate-400 mt-0.5">{entry.date}</p>
                     <ul className="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1 pl-1">
                       {entry.items.map((item, idx) => (
-                        <li key={idx}>{item}</li>
+                        <li key={idx} className="leading-relaxed">{parseMarkdown(item)}</li>
                       ))}
                     </ul>
                   </div>
